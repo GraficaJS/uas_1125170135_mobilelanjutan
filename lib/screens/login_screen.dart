@@ -125,7 +125,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           // ===== EMAIL FIELD =====
-
                           TextFormField(
                             controller:   _emailController,
                             keyboardType: TextInputType.emailAddress,
@@ -180,4 +179,70 @@ class _LoginScreenState extends State<LoginScreen> {
                           
                           // ===== FORGOT PASSWORD =====
                           Align(
+
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: () {
+                                // Implementasi lupa password
+                              },
+                              child: const Text('Lupa Password?'),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          
+                          // ===== LOGIN BUTTON =====
+                          FilledButton(
+                            onPressed: _isLoading ? null : _handleLogin,
+                            style: FilledButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: _isLoading
+                              ? const SizedBox(
+                                  width: 20, height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Text('Login',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                
+                const SizedBox(height: 24),
+                
+                // ===== REGISTER LINK =====
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Belum punya akun? ',
+                      style: TextStyle(color: Colors.grey.shade600)),
+                    TextButton(
+                      onPressed: () => Navigator.push(context,
+                        MaterialPageRoute(
+                          builder: (_) => const RegisterScreen())),
+                      child: const Text('Daftar Sekarang',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
