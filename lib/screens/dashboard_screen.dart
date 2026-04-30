@@ -222,4 +222,69 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 }
+ 
+// ========== WIDGET HELPER ==========
+class _StatCard extends StatelessWidget {
+  final IconData icon;
+  final String label, value;
+  final Color color;
+ 
+  const _StatCard({
+    required this.icon, required this.label,
+    required this.value, required this.color,
+  });
+ 
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withOpacity(0.2)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, color: color, size: 24),
+            const SizedBox(height: 8),
+            Text(value,
+              style: TextStyle(
+                fontSize: 22, fontWeight: FontWeight.bold, color: color)),
+            Text(label,
+              style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+          ],
+        ),
+      ),
+
+    );
+  }
+}
+ 
+class _InfoTile extends StatelessWidget {
+  final IconData icon;
+  final String label, value;
+  final Color? valueColor;
+ 
+  const _InfoTile({
+    required this.icon, required this.label,
+    required this.value, this.valueColor,
+  });
+ 
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(icon, color: Theme.of(context).colorScheme.primary),
+      title: Text(label,
+        style: TextStyle(color: Colors.grey.shade600, fontSize: 13)),
+      subtitle: Text(value,
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          color: valueColor ?? Colors.black87,
+        )),
+    );
+  }
+}
+
 
