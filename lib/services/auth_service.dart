@@ -1,16 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
- 
 class AuthService {
   // Instance singleton FirebaseAuth
   final FirebaseAuth _auth = FirebaseAuth.instance;
- 
+
   // Getter untuk mendapatkan user yang sedang login
   User? get currentUser => _auth.currentUser;
- 
+
   // Stream untuk memantau perubahan status auth
   Stream<User?> get authStateChanges => _auth.authStateChanges();
- 
+
   // ============ REGISTER ============
   Future<UserCredential?> register({
     required String email,
@@ -21,13 +20,14 @@ class AuthService {
         email: email.trim(),
         password: password,
       );
+      await credential.user?.sendEmailVerification();
       return credential;
     } on FirebaseAuthException catch (e) {
       // Lempar exception dengan pesan yang user-friendly
       throw _handleAuthException(e);
     }
   }
- 
+
   // ============ LOGIN ============
   Future<UserCredential?> login({
     required String email,
@@ -43,22 +43,21 @@ class AuthService {
       throw _handleAuthException(e);
     }
   }
- 
+
   // ============ LOGOUT ============
   Future<void> logout() async {
     await _auth.signOut();
   }
- 
+
   // ============ RESET PASSWORD ============
   Future<void> resetPassword(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email.trim());
     } on FirebaseAuthException catch (e) {
-
       throw _handleAuthException(e);
     }
   }
- 
+
   // ============ ERROR HANDLER ============
   String _handleAuthException(FirebaseAuthException e) {
     switch (e.code) {
@@ -83,4 +82,3 @@ class AuthService {
     }
   }
 }
-

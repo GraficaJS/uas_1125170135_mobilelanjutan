@@ -1,24 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
- 
-class DashboardScreen extends StatelessWidget {
+
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
- 
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  User? user;
+
+  @override
+  void initState() {
+    super.initState();
+    loadUser();
+  }
+
+  Future<void> loadUser() async {
+    await FirebaseAuth.instance.currentUser?.reload();
+    final updatedUser = FirebaseAuth.instance.currentUser;
+
+    print("EMAIL: ${updatedUser?.email}");
+    print("VERIFIED: ${updatedUser?.emailVerified}");
+
+    setState(() {
+      user = updatedUser;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // Ambil data user yang sedang login
-    final User? user = FirebaseAuth.instance.currentUser;
     final authService = AuthService();
     final theme = Theme.of(context);
- 
+
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
-      
+
       // ========== APP BAR ==========
       appBar: AppBar(
-        title: const Text('Dashboard',
-          style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Dashboard',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: theme.colorScheme.primary,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -51,7 +77,6 @@ class DashboardScreen extends StatelessWidget {
         ],
       ),
 
- 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -91,8 +116,10 @@ class DashboardScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Selamat Datang! 👋',
-                          style: TextStyle(color: Colors.white70, fontSize: 14)),
+                        const Text(
+                          'Selamat Datang! 👋',
+                          style: TextStyle(color: Colors.white70, fontSize: 14),
+                        ),
 
                         const SizedBox(height: 4),
                         Text(
@@ -108,13 +135,17 @@ class DashboardScreen extends StatelessWidget {
                         const SizedBox(height: 4),
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 2),
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.white24,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Text('✓ Terverifikasi',
-                            style: TextStyle(color: Colors.white, fontSize: 12)),
+                          child: const Text(
+                            '✓ Terverifikasi',
+                            style: TextStyle(color: Colors.white, fontSize: 12),
+                          ),
                         ),
                       ],
                     ),
@@ -122,14 +153,16 @@ class DashboardScreen extends StatelessWidget {
                 ],
               ),
             ),
- 
+
             const SizedBox(height: 24),
- 
+
             // ========== STATISTIK CARDS ==========
-            const Text('Ringkasan',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            const Text(
+              'Ringkasan',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
             const SizedBox(height: 12),
- 
+
             Row(
               children: [
                 _StatCard(
@@ -155,14 +188,16 @@ class DashboardScreen extends StatelessWidget {
                 ),
               ],
             ),
- 
+
             const SizedBox(height: 24),
- 
+
             // ========== INFO AKUN ==========
-            const Text('Informasi Akun',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            const Text(
+              'Informasi Akun',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
             const SizedBox(height: 12),
- 
+
             Card(
               elevation: 0,
               color: Colors.white,
@@ -188,16 +223,18 @@ class DashboardScreen extends StatelessWidget {
                     icon: Icons.verified_outlined,
                     label: 'Status Email',
                     value: user?.emailVerified == true
-                      ? 'Terverifikasi' : 'Belum Terverifikasi',
+                        ? 'Terverifikasi'
+                        : 'Belum Terverifikasi',
                     valueColor: user?.emailVerified == true
-                      ? Colors.green : Colors.orange,
+                        ? Colors.green
+                        : Colors.orange,
                   ),
                 ],
               ),
             ),
- 
+
             const SizedBox(height: 24),
- 
+
             // ========== LOGOUT BUTTON ==========
             SizedBox(
               width: double.infinity,
@@ -205,13 +242,19 @@ class DashboardScreen extends StatelessWidget {
                 onPressed: () async => await authService.logout(),
 
                 icon: const Icon(Icons.logout, color: Colors.red),
-                label: const Text('Logout',
-                  style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                label: const Text(
+                  'Logout',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   side: const BorderSide(color: Colors.red),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
             ),
@@ -222,18 +265,20 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 }
- 
+
 // ========== WIDGET HELPER ==========
 class _StatCard extends StatelessWidget {
   final IconData icon;
   final String label, value;
   final Color color;
- 
+
   const _StatCard({
-    required this.icon, required this.label,
-    required this.value, required this.color,
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.color,
   });
- 
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -249,40 +294,52 @@ class _StatCard extends StatelessWidget {
           children: [
             Icon(icon, color: color, size: 24),
             const SizedBox(height: 8),
-            Text(value,
+            Text(
+              value,
               style: TextStyle(
-                fontSize: 22, fontWeight: FontWeight.bold, color: color)),
-            Text(label,
-              style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+            Text(
+              label,
+              style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+            ),
           ],
         ),
       ),
-
     );
   }
 }
- 
+
 class _InfoTile extends StatelessWidget {
   final IconData icon;
   final String label, value;
   final Color? valueColor;
- 
+
   const _InfoTile({
-    required this.icon, required this.label,
-    required this.value, this.valueColor,
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.valueColor,
   });
- 
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: Icon(icon, color: Theme.of(context).colorScheme.primary),
-      title: Text(label,
-        style: TextStyle(color: Colors.grey.shade600, fontSize: 13)),
-      subtitle: Text(value,
+      title: Text(
+        label,
+        style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+      ),
+      subtitle: Text(
+        value,
         style: TextStyle(
           fontWeight: FontWeight.w600,
           color: valueColor ?? Colors.black87,
-        )),
+        ),
+      ),
     );
   }
 }
